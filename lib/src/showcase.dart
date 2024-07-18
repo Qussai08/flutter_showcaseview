@@ -453,13 +453,12 @@ class _ShowcaseState extends State<Showcase> {
   Widget build(BuildContext context) {
     if (_enableShowcase) {
       return Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.passthrough,
         children: [
           AnchoredOverlay(
             key: showCaseWidgetState.anchoredOverlayKey,
             rootRenderObject: rootRenderObject,
-            actionWidget: widget.actionWidget,
-            actionEndPadding: widget.actionEndPadding,
-            actionTopPadding: widget.actionTopPadding,
             overlayBuilder: (context, rectBound, offset) {
               final size = rootWidgetSize ?? MediaQuery.of(context).size;
               position = GetPosition(
