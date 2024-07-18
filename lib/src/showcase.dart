@@ -452,34 +452,33 @@ class _ShowcaseState extends State<Showcase> {
   @override
   Widget build(BuildContext context) {
     if (_enableShowcase) {
-      return Stack(
-        children: [
-          AnchoredOverlay(
-            key: showCaseWidgetState.anchoredOverlayKey,
+      return AnchoredOverlay(
+        key: showCaseWidgetState.anchoredOverlayKey,
+        rootRenderObject: rootRenderObject,
+        overlayBuilder: (context, rectBound, offset) {
+          final size = rootWidgetSize ?? MediaQuery.of(context).size;
+          position = GetPosition(
             rootRenderObject: rootRenderObject,
-            overlayBuilder: (context, rectBound, offset) {
-              final size = rootWidgetSize ?? MediaQuery.of(context).size;
-              position = GetPosition(
-                rootRenderObject: rootRenderObject,
-                key: widget.key,
-                padding: widget.targetPadding,
-                screenWidth: size.width,
-                screenHeight: size.height,
-              );
-              return buildOverlayOnTarget(
-                  offset, rectBound.size, rectBound, size);
-            },
-            showOverlay: true,
-            child: widget.child,
-          ),
-          Visibility(
-            visible: widget.actionWidget != null,
-            child: PositionedDirectional(
-                end: widget.actionEndPadding,
-                top: widget.actionTopPadding,
-                child: widget.actionWidget ?? Container()),
-          ),
-        ],
+            key: widget.key,
+            padding: widget.targetPadding,
+            screenWidth: size.width,
+            screenHeight: size.height,
+          );
+          return Stack(
+            children: [
+              buildOverlayOnTarget(offset, rectBound.size, rectBound, size),
+              Visibility(
+                visible: widget.actionWidget != null,
+                child: PositionedDirectional(
+                    end: widget.actionEndPadding,
+                    top: widget.actionTopPadding,
+                    child: widget.actionWidget ?? Container()),
+              ),
+            ],
+          );
+        },
+        showOverlay: true,
+        child: widget.child,
       );
     }
     return widget.child;
