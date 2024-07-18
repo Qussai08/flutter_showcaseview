@@ -464,21 +464,21 @@ class _ShowcaseState extends State<Showcase> {
             screenWidth: size.width,
             screenHeight: size.height,
           );
-          return Stack(
-            children: [
-              buildOverlayOnTarget(offset, rectBound.size, rectBound, size),
-              Visibility(
-                visible: widget.actionWidget != null,
-                child: PositionedDirectional(
-                    end: widget.actionEndPadding,
-                    top: widget.actionTopPadding,
-                    child: widget.actionWidget ?? Container()),
-              ),
-            ],
-          );
+          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
         },
         showOverlay: true,
-        child: widget.child,
+        child: Stack(
+          children: [
+            widget.child,
+            Visibility(
+              visible: widget.actionWidget != null,
+              child: PositionedDirectional(
+                  end: widget.actionEndPadding,
+                  top: widget.actionTopPadding,
+                  child: widget.actionWidget ?? Container()),
+            ),
+          ],
+        ),
       );
     }
     return widget.child;
