@@ -254,7 +254,7 @@ class Showcase extends StatefulWidget {
 
   // Defines an action Widget to use over the overlay
   final Widget? actionWidget;
-  final double? actionStartPadding;
+  final double? actionEndPadding;
   final double? actionTopPadding;
 
   const Showcase({
@@ -262,7 +262,7 @@ class Showcase extends StatefulWidget {
     required this.description,
     required this.child,
     this.actionWidget,
-    this.actionStartPadding,
+    this.actionEndPadding,
     this.actionTopPadding,
     this.title,
     this.titleAlignment = TextAlign.start,
@@ -325,7 +325,7 @@ class Showcase extends StatefulWidget {
     required this.container,
     required this.child,
     this.actionWidget,
-    this.actionStartPadding,
+    this.actionEndPadding,
     this.actionTopPadding,
     this.targetShapeBorder = const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(
@@ -452,34 +452,22 @@ class _ShowcaseState extends State<Showcase> {
   @override
   Widget build(BuildContext context) {
     if (_enableShowcase) {
-      return Stack(
-        children: [
-          AnchoredOverlay(
-            key: showCaseWidgetState.anchoredOverlayKey,
+      return AnchoredOverlay(
+        key: showCaseWidgetState.anchoredOverlayKey,
+        rootRenderObject: rootRenderObject,
+        overlayBuilder: (context, rectBound, offset) {
+          final size = rootWidgetSize ?? MediaQuery.of(context).size;
+          position = GetPosition(
             rootRenderObject: rootRenderObject,
-            overlayBuilder: (context, rectBound, offset) {
-              final size = rootWidgetSize ?? MediaQuery.of(context).size;
-              position = GetPosition(
-                rootRenderObject: rootRenderObject,
-                key: widget.key,
-                padding: widget.targetPadding,
-                screenWidth: size.width,
-                screenHeight: size.height,
-              );
-              return buildOverlayOnTarget(
-                  offset, rectBound.size, rectBound, size);
-            },
-            showOverlay: true,
-            child: widget.child,
-          ),
-          Visibility(
-            visible: widget.actionWidget != null,
-            child: PositionedDirectional(
-                start: widget.actionStartPadding,
-                top: widget.actionTopPadding,
-                child: widget.actionWidget ?? Container()),
-          ),
-        ],
+            key: widget.key,
+            padding: widget.targetPadding,
+            screenWidth: size.width,
+            screenHeight: size.height,
+          );
+          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
+        },
+        showOverlay: true,
+        child: widget.child,
       );
     }
     return widget.child;
@@ -657,6 +645,13 @@ class _ShowcaseState extends State<Showcase> {
             toolTipSlideEndDistance: widget.toolTipSlideEndDistance,
           ),
         ],
+        Visibility(
+          visible: widget.actionWidget != null,
+          child: PositionedDirectional(
+              end: widget.actionEndPadding,
+              top: widget.actionTopPadding,
+              child: widget.actionWidget ?? Container()),
+        ),
       ],
     );
   }
