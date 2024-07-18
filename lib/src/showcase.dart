@@ -455,6 +455,9 @@ class _ShowcaseState extends State<Showcase> {
       return AnchoredOverlay(
         key: showCaseWidgetState.anchoredOverlayKey,
         rootRenderObject: rootRenderObject,
+        actionWidget: widget.actionWidget,
+        actionEndPadding: widget.actionEndPadding,
+        actionTopPadding: widget.actionTopPadding,
         overlayBuilder: (context, rectBound, offset) {
           final size = rootWidgetSize ?? MediaQuery.of(context).size;
           position = GetPosition(
@@ -464,21 +467,11 @@ class _ShowcaseState extends State<Showcase> {
             screenWidth: size.width,
             screenHeight: size.height,
           );
-          return buildOverlayOnTarget(offset, rectBound.size, rectBound, size);
+          return buildOverlayOnTarget(
+              offset, rectBound.size, rectBound, size);
         },
         showOverlay: true,
-        child: Stack(
-          children: [
-            widget.child,
-            Visibility(
-              visible: widget.actionWidget != null,
-              child: PositionedDirectional(
-                  end: widget.actionEndPadding,
-                  top: widget.actionTopPadding,
-                  child: widget.actionWidget ?? Container()),
-            ),
-          ],
-        ),
+        child: widget.child,
       );
     }
     return widget.child;
