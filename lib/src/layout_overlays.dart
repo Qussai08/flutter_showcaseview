@@ -50,71 +50,60 @@ class AnchoredOverlay extends StatelessWidget {
   final Widget? actionWidget;
   final double? actionEndPadding;
   final double? actionTopPadding;
-
+  
   const AnchoredOverlay({
     super.key,
     this.showOverlay = false,
     this.overlayBuilder,
     this.child,
-    this.rootRenderObject,
-    this.actionWidget,
-    this.actionEndPadding,
+    this.rootRenderObject, 
+    this.actionWidget, 
+    this.actionEndPadding, 
     this.actionTopPadding,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return OverlayBuilder(
-              showOverlay: showOverlay,
-              overlayBuilder: (overlayContext) {
-                // To calculate the "anchor" point we grab the render box of
-                // our parent Container and then we find the center of that box.
-                final box = context.findRenderObject() as RenderBox;
-
-                final topLeft = box.size.topLeft(
-                  box.localToGlobal(
-                    const Offset(0.0, 0.0),
-                    ancestor: rootRenderObject,
-                  ),
-                );
-                final bottomRight = box.size.bottomRight(
-                  box.localToGlobal(
-                    const Offset(0.0, 0.0),
-                    ancestor: rootRenderObject,
-                  ),
-                );
-                Rect anchorBounds;
-                anchorBounds = (topLeft.dx.isNaN ||
-                        topLeft.dy.isNaN ||
-                        bottomRight.dx.isNaN ||
-                        bottomRight.dy.isNaN)
-                    ? const Rect.fromLTRB(0.0, 0.0, 0.0, 0.0)
-                    : Rect.fromLTRB(
-                        topLeft.dx,
-                        topLeft.dy,
-                        bottomRight.dx,
-                        bottomRight.dy,
-                      );
-                final anchorCenter = box.size.center(topLeft);
-                return overlayBuilder!(
-                    overlayContext, anchorBounds, anchorCenter);
-              },
-              child: child,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return OverlayBuilder(
+          showOverlay: showOverlay,
+          overlayBuilder: (overlayContext) {
+            // To calculate the "anchor" point we grab the render box of
+            // our parent Container and then we find the center of that box.
+            final box = context.findRenderObject() as RenderBox;
+        
+            final topLeft = box.size.topLeft(
+              box.localToGlobal(
+                const Offset(0.0, 0.0),
+                ancestor: rootRenderObject,
+              ),
             );
+            final bottomRight = box.size.bottomRight(
+              box.localToGlobal(
+                const Offset(0.0, 0.0),
+                ancestor: rootRenderObject,
+              ),
+            );
+            Rect anchorBounds;
+            anchorBounds = (topLeft.dx.isNaN ||
+                    topLeft.dy.isNaN ||
+                    bottomRight.dx.isNaN ||
+                    bottomRight.dy.isNaN)
+                ? const Rect.fromLTRB(0.0, 0.0, 0.0, 0.0)
+                : Rect.fromLTRB(
+                    topLeft.dx,
+                    topLeft.dy,
+                    bottomRight.dx,
+                    bottomRight.dy,
+                  );
+            final anchorCenter = box.size.center(topLeft);
+            return overlayBuilder!(
+                overlayContext, anchorBounds, anchorCenter);
           },
-        ),
-        Visibility(
-          visible: actionWidget != null,
-          child: PositionedDirectional(
-              end: actionEndPadding,
-              top: actionTopPadding,
-              child: actionWidget ?? Container()),
-        ),
-      ],
+          child: child,
+        );
+      },
     );
   }
 }
