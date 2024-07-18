@@ -50,25 +50,25 @@ class AnchoredOverlay extends StatelessWidget {
   final Widget? actionWidget;
   final double? actionEndPadding;
   final double? actionTopPadding;
-  
+
   const AnchoredOverlay({
     super.key,
     this.showOverlay = false,
     this.overlayBuilder,
     this.child,
-    this.rootRenderObject, 
-    this.actionWidget, 
-    this.actionEndPadding, 
+    this.rootRenderObject,
+    this.actionWidget,
+    this.actionEndPadding,
     this.actionTopPadding,
   });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Stack(
-          children: [
-            OverlayBuilder(
+    return Stack(
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return OverlayBuilder(
               showOverlay: showOverlay,
               overlayBuilder: (overlayContext) {
                 // To calculate the "anchor" point we grab the render box of
@@ -104,17 +104,17 @@ class AnchoredOverlay extends StatelessWidget {
                     overlayContext, anchorBounds, anchorCenter);
               },
               child: child,
-            ),
-            Visibility(
-              visible: actionWidget != null,
-              child: PositionedDirectional(
-                  end: actionEndPadding,
-                  top: actionTopPadding,
-                  child: actionWidget ?? Container()),
-            ),
-          ],
-        );
-      },
+            );
+          },
+        ),
+        Visibility(
+          visible: actionWidget != null,
+          child: PositionedDirectional(
+              end: actionEndPadding,
+              top: actionTopPadding,
+              child: actionWidget ?? Container()),
+        ),
+      ],
     );
   }
 }
